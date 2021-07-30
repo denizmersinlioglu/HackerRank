@@ -1,6 +1,211 @@
 import Foundation
 
+// MARK: - Matrix Layer Rotation
+//
+//func matrixRotation(matrix: [[Int]], r: Int) -> Void {
+//    let rowCount = matrix.count
+//    let columnCount = matrix.first!.count
+//    let listCount = min(rowCount, columnCount)/2
+//    var lists: [List] = []
+//    
+//    for i in 0..<listCount {
+//        let list = List(topEdgeRow: i, bottomEdgeRow: rowCount-i-1, leftColumn: i, rightColumn: columnCount-i-1)
+//        lists.append(list)
+//    }
+//    
+//    for i in 0..<rowCount {
+//        for j in 0..<columnCount {
+//            let cell = Cell(row: i, col: j, value: matrix[i][j])
+//            for index in 0..<lists.count {
+//                if lists[index].contains(row: i, col: j) { lists[index].addCell(cell: cell) }
+//            }
+//        }
+//    }
+//    
+//    struct Cell {
+//        var row: Int
+//        var col: Int
+//        var value: Int
+//    }
+//    
+//    struct List {
+//        var topEdgeRow: Int
+//        var bottomEdgeRow: Int
+//        var leftColumn: Int
+//        var rightColumn: Int
+//        var cells: [Cell] = []
+//        
+//        func contains(row: Int, col: Int) -> Bool {
+//            let foo = (leftColumn == col || rightColumn == col) && (topEdgeRow...bottomEdgeRow).contains(row)
+//            let baz = (topEdgeRow == row || bottomEdgeRow == row)  && (leftColumn...rightColumn).contains(col)
+//            return foo || baz
+//        }
+//        
+//        mutating func addCell(cell: Cell) {
+//            cells.append(cell)
+//        }
+//        
+//        mutating func sort() {
+//            let tmp = cells
+//            cells = tmp.sorted(by: { first, second in
+//                first.col ==
+//            })
+//        }
+//        
+//        mutating func rotate() {
+//            let tmp = cells
+//            for i in 0..<cells.count {
+//                if i == 0 { cells[i].value = tmp[cells.count-1].value}
+//                else { cells[i].value = tmp[i-1].value }
+//            }
+//        }
+//    }
+//    for _ in 0..<r {
+//        for index in 0..<lists.count {
+//            lists[index].rotate()
+//        }
+//    }
+//    var arr = Array(repeating: Array(repeating: 0, count: columnCount), count: rowCount)
+//    let flat = lists.map(\.cells).flatMap{$0}
+//    for cell in flat {
+//        arr[cell.row][cell.col] = cell.value
+//    }
+//    print(arr)
+//}
+//
+//matrixRotation(matrix: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]], r: 2)
+
+// MARK: - The Bomberman Game
+
+func bomberMan(n: Int, grid: [String]) -> [String] {
+    class BombermanCell {
+        enum State: String {
+            case readyToExplode = "X"
+            case bomb = "O"
+            case empty = "."
+            
+            var value: String {
+                switch self {
+                case .bomb, .readyToExplode: return "O"
+                case .empty: return "."
+                }
+            }
+        }
+        
+        var state: State
+        var neighbors: [BombermanCell] = []
+        var shouldClear: Bool = false
+        
+        init(state: State?) {
+            self.state = state ?? .empty
+        }
+        
+        func plant() {
+            switch state {
+            case .readyToExplode: break;
+            case .bomb: state = .readyToExplode;
+            case .empty: state = .bomb;
+            }
+        }
+        
+        func explode() {
+            shouldClear = state == .readyToExplode || neighbors.contains(where: { $0.state == .readyToExplode })
+        }
+        
+        func clear() {
+            if shouldClear { state = .empty }
+        }
+    }
+    
+    if n == 1 || n == 0 { return grid }
+    
+    let rowCount = grid.count
+    let columnCount = grid.first?.count ?? 0
+    let newGrid = grid.map{Array($0)}
+    var cellGrid = [[BombermanCell]]()
+    
+    for i in 0..<rowCount {
+        cellGrid.append([])
+        for j in 0..<columnCount {
+            let element = newGrid[i][j]
+            let cell = BombermanCell(state: BombermanCell.State(rawValue: String(element)))
+            cellGrid[i].append(cell)
+        }
+    }
+    
+    for i in 0..<rowCount {
+        for j in 0..<columnCount {
+            let neighborIndexes = [(i+1, j), (i-1,j), (i, j+1), (i, j-1)]
+                .filter { (row, col) in row >= 0 && row < rowCount && col >= 0 && col < columnCount }
+            cellGrid[i][j].neighbors = neighborIndexes.map{ cellGrid[$0.0][$0.1] }
+        }
+    }
+    
+    let flat = cellGrid.flatMap{ $0 }
+    
+    func run(for steps: Int) {
+        if steps % 2 == 1 {
+            flat.forEach{ $0.explode() }
+            flat.forEach { $0.clear() }
+        } else {
+            flat.forEach{ $0.plant() }
+        }
+    }
+    
+    if n <= 5 { (1...n).forEach{ run(for: $0)} }
+    else { (1...(n % 4) + 4).forEach{ run(for: $0)} }
+    
+    return cellGrid.map{ $0.map{ $0.state.value}.joined() }
+}
+
+bomberMan(n: 5, grid: [".......", "...O.O.", "....O..", "..O....", "OO...OO", "OO.O..." ])
+
+// MARK: - Almost Sorted
+
+func almostSorted(arr: [Int]) -> Void {
+    var sortable = true
+    var swappable = false
+    let sortedArr = arr.sorted()
+    let diff = zip(arr, sortedArr).enumerated().filter {  $1.0 != $1.1 }
+    
+    // Already sorted
+    if diff.isEmpty { print("yes"); return}
+    
+    let firstIndex = diff.first!.offset + 1
+    let secondIndex = diff.last!.offset + 1
+    
+    if diff.count == 2 {
+        swappable = true
+    } else {
+        sortable = (0..<diff.count-1)
+            .reduce(true) { res, index in
+                res && diff[index].element.0 > diff[index+1].element.0
+            }
+    }
+    
+    print(sortable ? "yes" : "no")
+    if sortable { print("\(swappable ? "swap" : "reverse") \(firstIndex) \(secondIndex)") }
+}
+
+almostSorted(arr: [4,2])
+almostSorted(arr: [1, 5, 4, 3, 2, 6])
+
+// MARK: - Larry's Array
+
+func larrysArray(A: [Int]) -> String {
+    var inversionCount = 0
+    for i in 1..<A.count {
+        inversionCount += A[0..<i].filter{ $0 > A[i] }.count
+    }
+    return inversionCount % 2 == 0 ? "YES" : "NO"
+}
+
+larrysArray(A: [1,6,5,2,4,3])
+larrysArray(A: [1,2,3,5,4])
+
+
 //MARK: - 3D Surface Area
+
 func surfaceArea(A: [[Int]]) -> Int {
     var surfaceCount = 0
     
@@ -35,6 +240,7 @@ func surfaceArea(A: [[Int]]) -> Int {
 surfaceArea(A: [[1,3,4],[2,2,3],[1,2,4]])
 
 //MARK: - Strange Counter
+
 func strangeCounter(t: Int) -> Int {
     let log3 = log(Double(t)/3 + 1)
     let n = ceil(log3/log(2))
@@ -44,6 +250,7 @@ func strangeCounter(t: Int) -> Int {
 strangeCounter(t: 1)
 
 //MARK: - Happy Ladybugs
+
 func happyLadybugs(b: String) -> String {
     
     let dictionary = Dictionary(grouping: b, by: { $0 })
@@ -88,6 +295,7 @@ func happyLadybugs(b: String) -> String {
 happyLadybugs(b: "GR")
 
 //MARK: - The Grid Search
+
 func gridSearch(G: [String], P: [String]) -> String {
         
     func sub(from: Int, to: Int, in str: String) -> String{
@@ -114,6 +322,7 @@ func gridSearch(G: [String], P: [String]) -> String {
 gridSearch(G: ["1234567890", "0987654321", "1111111111", "1111111111", "2222222222"  ], P: ["876543", "111111", "111111"])
 
 //MARK: - Manasa and Stones
+
 func stones(n: Int, a: Int, b: Int) -> [Int] {
     guard a != b else {return [(n-1)*a]}
     let (first, second) = (min(a, b), max(a, b))
@@ -125,6 +334,7 @@ print(stones(n: 73, a: 25, b: 25))
 print(stones(n: 12, a: 73, b: 82))
 
 //MARK: - Cavity Map
+
 func cavityMap(grid: [String]) -> [String] {
     func toIntRow(from string: String) -> [Int]{
         return string.compactMap { Int(String($0)) }
@@ -156,6 +366,7 @@ func cavityMap(grid: [String]) -> [String] {
 cavityMap(grid: ["1112", "1912", "1892", "1234"])
 
 //MARK: - Fair Rations
+
 func fairRations(B: [Int]) -> String {
     var mod = B.map{$0%2}
     let oneCount = mod.filter{$0 == 1}.count
@@ -172,6 +383,7 @@ func fairRations(B: [Int]) -> String {
 fairRations(B: [2, 3, 5, 4, 6])
 
 //MARK: - Flatland Space Stations
+
 func flatlandSpaceStations(n: Int, c: [Int]) -> Int {
     let stations = c.sorted()
     let endPointMax = max(stations.first ?? 0, n - (stations.last ?? 0) - 1)
@@ -198,7 +410,9 @@ func flatlandSpaceStations2(n: Int, c: [Int]) -> Int {
         return max(minDist, res)
     }
 }
+
 //MARK: - Lisa's Workbook
+
 func workbook(n: Int, k: Int, arr: [Int]) -> Int {
     var pageCount = 1
     var magicProbCount = 0
@@ -223,6 +437,7 @@ func workbook(n: Int, k: Int, arr: [Int]) -> Int {
 workbook(n: 5, k: 3, arr: [4, 2, 6, 1, 10])
 
 //MARK: - Service Lane
+
 func serviceLane(n: Int, width: [Int], cases: [[Int]]) -> [Int] {
     return cases.map { width[$0[0]...$0[1]].min() ?? 0 }
 }
@@ -230,6 +445,7 @@ func serviceLane(n: Int, width: [Int], cases: [[Int]]) -> [Int] {
 serviceLane(n: 8, width: [2, 3, 1, 2, 3, 2, 3, 3,], cases: [[0,3], [4,6], [6,7], [3,5],[0,7]])
 
 //MARK: - Chocolate Feast
+
 func chocolateFeast(n: Int, c: Int, m: Int) -> Int {
     var money = n
     var wrappers = 0
@@ -250,6 +466,7 @@ func chocolateFeast(n: Int, c: Int, m: Int) -> Int {
 chocolateFeast(n: 10, c: 2, m: 5)
 
 //MARK: - The Time in Words
+
 func timeInWords(h: Int, m: Int) -> String {
     let words = [1: "one", 2: "two",   3: "three", 4: "four",  5: "five",
         6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
@@ -289,6 +506,7 @@ func timeInWords(h: Int, m: Int) -> String {
 timeInWords(h: 5, m: 47)
 
 //MARK: - Halloween Sale
+
 func howManyGames(p: Int, d: Int, m: Int, s: Int) -> Int {
     var count = 0
     var remainingMoney = s
@@ -305,6 +523,7 @@ func howManyGames(p: Int, d: Int, m: Int, s: Int) -> Int {
 howManyGames(p: 16, d: 2, m: 1, s: 9981)
 
 //MARK: - Minimum Distances
+
 func minimumDistances(a: [Int]) -> Int {
     let dictionary = Dictionary(grouping: a, by: { $0 })
     let pairs = dictionary.mapValues {$0.count}.filter { $0.1 > 1}.keys
@@ -317,6 +536,7 @@ func minimumDistances(a: [Int]) -> Int {
 minimumDistances(a: [7, 1, 3, 4, 1, 7])
 
 //MARK: - Beautiful Triplets
+
 func beautifulTriplets(d: Int, arr: [Int]) -> Int {
     var i = 0
     var j = 1
@@ -357,6 +577,7 @@ func beautifulTriplets(d: Int, arr: [Int]) -> Int {
 beautifulTriplets(d: 3, arr: [1,2,4,5,7,8,10])
 
 //MARK: - KaprekarNumbers
+
 func kaprekarNumbers(p: Int, q: Int) -> Void {
     func isKaprekar(n: Int) -> Bool{
         let rightCount = "\(n)".count
@@ -383,6 +604,7 @@ func kaprekarNumbers(p: Int, q: Int) -> Void {
 kaprekarNumbers(p: 400, q: 700)
 
 //MARK: - Bigger is Greater
+
 func biggerIsGreater(w: String) -> String {
     if (w.count <= 1) {return "no answer"}
     var i = w.count - 1
@@ -470,6 +692,7 @@ func biggerIsGreater2(w: String) -> String {
 }
 
 //MARK: - Encryption
+
 func encryption(s: String) -> String {
     let sq = sqrt(Double(s.count))
     var row = Int(floor(sq))
@@ -523,55 +746,8 @@ organizingContainers(container: [[1,3,1], [2,1,2], [3,3,3]])
 organizingContainers(container: [[0,2,1], [1,1,1], [2,0,0]])
 
 
-func organizingContainers2(container: [[Int]]) -> String {
-    
-    var typeCount = Array.init(repeating: 0, count: container.count)
-    
-    func permutations<T>(xs: [T]) -> [[T]] {
-        func decompose<T>(_ xs: [T]) -> (T, [T])?{
-            guard let x = xs.first else { return nil }
-            return (x, Array(xs[1..<xs.count]))
-        }
-        func between<T>(x: T, _ ys: [T]) -> [[T]] {
-            guard let (head, tail) = decompose(ys) else { return [[x]] }
-            return [[x] + ys] + between(x: x, tail).map { [head] + $0 }
-        }
-        guard let (head, tail) = decompose(xs) else { return [[]] }
-        return permutations(xs: tail).flatMap { between(x: head, $0) }
-    }
-    
-    let numbers = (0..<container.count).map{$0}
-    let p = permutations(xs: numbers)
-    
-    for i in (0..<container.count){
-        typeCount[i] = container.reduce(0, { (res, row) -> Int in
-            return res + row[i]
-        })
-    }
-    
-    let diagonalMatrices = p.map { (orderArray) -> [[Int]] in
-        let zeroRow = Array.init(repeating: 0, count: container.count)
-        var zeroMatrix = Array.init(repeating: zeroRow, count: container.count)
-        orderArray.enumerated().forEach { (arg0) in
-            let (offset, order) = arg0
-            zeroMatrix[order][offset] = typeCount[offset]
-        }
-        return zeroMatrix
-    }
-    
-    let isPossible = diagonalMatrices.first { (diagonalMatrix) -> Bool in
-        return zip(container, diagonalMatrix).reduce(true) { (res, arg0) -> Bool in
-            let (row, diag) = arg0
-            let diffAr = zip(row, diag).map { return $0-$1 }
-            return diffAr.reduce(0, +) == 0
-        }
-    }
-    
-    return isPossible != nil ? "Possible" : "Impossible"
-}
-
-
 //MARK: - Taum and B'day
+
 func taumBday(b: Int, w: Int, bc: Int, wc: Int, z: Int) -> Int {
     return min(bc, wc + z) * b + min(wc, bc + z) * w
 }
@@ -579,6 +755,7 @@ func taumBday(b: Int, w: Int, bc: Int, wc: Int, z: Int) -> Int {
 taumBday(b: 7, w: 7, bc: 4, wc: 2, z: 1)
 
 //MARK: - ACM ICPC Team
+
 func acmTeam(topic: [String]) -> [Int] {
     let bits: [[UInt8]] = topic.map {  element -> [UInt8] in
         return element.map { ($0 == "1") ? 1 : 0 }
