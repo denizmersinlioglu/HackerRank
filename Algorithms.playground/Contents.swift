@@ -158,7 +158,7 @@ func bomberMan(n: Int, grid: [String]) -> [String] {
     return cellGrid.map{ $0.map{ $0.state.value}.joined() }
 }
 
-bomberMan(n: 5, grid: [".......", "...O.O.", "....O..", "..O....", "OO...OO", "OO.O..." ])
+bomberMan(n: 501, grid: [".......", "...O.O.", "....O..", "..O....", "OO...OO", "OO.O..." ])
 
 // MARK: - Almost Sorted
 
@@ -233,9 +233,9 @@ func surfaceArea(A: [[Int]]) -> Int {
         }
     }
     return surfaceCount + constantArea
-//    4 4 4
-//    4 2 4
-//    4 4 4
+    //    4 4 4
+    //    4 2 4
+    //    4 4 4
 }
 surfaceArea(A: [[1,3,4],[2,2,3],[1,2,4]])
 
@@ -258,8 +258,8 @@ func happyLadybugs(b: String) -> String {
             var out = res
             out[String(arg0.key)] = arg0.value.count
             return out
-    }
-
+        }
+    
     let numberOfDashes = dictionary["_"] ?? 0
     if numberOfDashes == b.count {return "YES"}
     
@@ -297,7 +297,7 @@ happyLadybugs(b: "GR")
 //MARK: - The Grid Search
 
 func gridSearch(G: [String], P: [String]) -> String {
-        
+    
     func sub(from: Int, to: Int, in str: String) -> String{
         let start = str.index(str.startIndex, offsetBy: from)
         let end = str.index(str.startIndex, offsetBy: to)
@@ -394,7 +394,7 @@ func flatlandSpaceStations(n: Int, c: [Int]) -> Int {
         return max(res, dist)
     }
     return max(endPointMax, localMax)
-
+    
 }
 flatlandSpaceStations(n: 95, c: [68, 81, 46, 54, 30, 11, 19, 23, 22, 12, 38, 91, 48, 75, 26, 86, 29, 83, 62])
 
@@ -469,13 +469,13 @@ chocolateFeast(n: 10, c: 2, m: 5)
 
 func timeInWords(h: Int, m: Int) -> String {
     let words = [1: "one", 2: "two",   3: "three", 4: "four",  5: "five",
-        6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
-        11: "eleven",   12: "twelve",  13: "thirteen",   14: "fourteen",
-        15: "fifteen",  16: "sixteen", 17: "seventeen",  18: "eighteen",
-        19: "nineteen", 20: "twenty",  21: "twenty one", 22: "twenty two",
-        23: "twenty three", 24: "twenty four",  25: "twenty five",
-        26: "twenty six",   27: "twenty seven", 28: "twenty eight",
-        29: "twenty nine"]
+                 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
+                 11: "eleven",   12: "twelve",  13: "thirteen",   14: "fourteen",
+                 15: "fifteen",  16: "sixteen", 17: "seventeen",  18: "eighteen",
+                 19: "nineteen", 20: "twenty",  21: "twenty one", 22: "twenty two",
+                 23: "twenty three", 24: "twenty four",  25: "twenty five",
+                 26: "twenty six",   27: "twenty seven", 28: "twenty eight",
+                 29: "twenty nine"]
     
     if m == 0{
         return words[h]! + " o' clock"
@@ -671,7 +671,7 @@ func biggerIsGreater2(w: String) -> String {
     let temp = array[swapIndex]
     array[swapIndex] = array[targetIndex]
     array[targetIndex] = temp
-
+    
     var prefix = [Character]()
     var post = [Character]()
     
@@ -711,7 +711,7 @@ func encryption(s: String) -> String {
             initials[offset].append(char)
         }
     }
-
+    
     return initials.reduce("") { (res, str) -> String in
         return res + " " + str
     }.trimmingCharacters(in: .whitespaces)
@@ -720,6 +720,7 @@ func encryption(s: String) -> String {
 encryption(s: "chillout")
 
 //MARK: - Organizing Containers of Balls
+
 func organizingContainers(container: [[Int]]) -> String {
     var typeArray = Array.init(repeating: 0, count: container.count)
     var containerArray = Array.init(repeating: 0, count: container.count)
@@ -730,7 +731,7 @@ func organizingContainers(container: [[Int]]) -> String {
         })
         containerArray[i] = container[i].reduce(0, +)
     }
- 
+    
     let isPossible = zip(typeArray.sorted(), containerArray.sorted()).reduce(true) { (res, arg0) -> Bool in
         return res && arg0.0 == arg0.1
     }
@@ -789,6 +790,7 @@ func acmTeam(topic: [String]) -> [Int] {
 acmTeam(topic: ["11101", "10101", "11001", "10111", "10000", "01110" ])
 
 //MARK: - Queen's Attack II
+
 func queensAttack(n: Int, k: Int, r_q: Int, c_q: Int, obstacles: [[Int]]) -> Int {
     
     enum QueenMove {
@@ -973,6 +975,7 @@ func queensAttack2(n: Int, k: Int, r_q: Int, c_q: Int, obstacles: [[Int]]) -> In
 
 
 //MARK: - Equalize the Array
+
 func equalizeArray(arr: [Int]) -> Int {
     var dict: [Int: Int] = [:]
     arr.forEach { (item) in
@@ -984,13 +987,14 @@ func equalizeArray(arr: [Int]) -> Int {
     }
     let maxCount = dict.max { (first, second) -> Bool in
         return second.1 > first.1
-        }?.value ?? 0
+    }?.value ?? 0
     return arr.count - maxCount
 }
 
 equalizeArray(arr: [3, 3, 2, 1, 3])
 
 //MARK: - Cut the sticks
+
 func cutTheSticks(arr: [Int]) -> [Int] {
     var notZeroCount = arr.count
     var sticksCut: [Int] = [arr.count]
@@ -1017,6 +1021,7 @@ func cutTheSticks(arr: [Int]) -> [Int] {
 cutTheSticks(arr: [1, 2, 3, 4, 3, 3, 2, 1])
 
 //MARK: - Library Fine
+
 func libraryFine(d1: Int, m1: Int, y1: Int, d2: Int, m2: Int, y2: Int) -> Int {
     let dueDate = d2 + m2 * 30 + y2 * 365
     let returnDate = d1 + m1 * 30 + y1 * 365
@@ -1034,6 +1039,7 @@ func libraryFine(d1: Int, m1: Int, y1: Int, d2: Int, m2: Int, y2: Int) -> Int {
 libraryFine(d1: 9, m1: 6, y1: 2015, d2: 6, m2: 6, y2: 2015)
 
 //MARK: - Circular Array Rotation
+
 func circularArrayRotation(a: [Int], k: Int, queries: [Int]) -> [Int] {
     return queries.map { item in
         let index = (item-k) % a.count
@@ -1061,6 +1067,7 @@ func jumpingOnClouds(c: [Int]) -> Int {
 }
 
 //MARK: - Save the Prisoner!
+
 func saveThePrisoner(n: Int, m: Int, s: Int) -> Int {
     let a = s+m-1
     if (a>n){
@@ -1071,6 +1078,7 @@ func saveThePrisoner(n: Int, m: Int, s: Int) -> Int {
 
 
 //MARK: - Viral Advertising
+
 func viralAdvertising(n: Int) -> Int {
     var shared = 5
     var liked = 0
@@ -1087,6 +1095,7 @@ func viralAdvertising(n: Int) -> Int {
 viralAdvertising(n: 3)
 
 //MARK: - Beautiful Days at the Movies
+
 func beautifulDays(i: Int, j: Int, k: Int) -> Int {
     func reverseNumber(_ n: Int) -> Int{
         var temp = n
@@ -1102,12 +1111,14 @@ func beautifulDays(i: Int, j: Int, k: Int) -> Int {
 }
 
 //MARK: - Angry Professor
+
 func angryProfessor(k: Int, a: [Int]) -> String {
     return a.filter{$0 <= 0}.count >= k ? "NO" : "YES"
 }
 
 
 //MARK: - Utopian Tree
+
 func utopianTree(n: Int) -> Int {
     if n == 0 {return 1}
     var currentHeight = 1
@@ -1123,6 +1134,7 @@ func utopianTree(n: Int) -> Int {
 
 
 //MARK: - Designer PDF Viewer
+
 func designerPdfViewer(h: [Int], word: String) -> Int {
     let mapStrings = "abcdefghijklmnopqrstuvwxyz"
     var heightDic: [Character: Int] = [:]
@@ -1137,6 +1149,7 @@ func designerPdfViewer(h: [Int], word: String) -> Int {
 }
 
 //MARK: - The Hurdle Race
+
 func hurdleRace(k: Int, height: [Int]) -> Int {
     let maxHeight = height.max() ?? 0
     return k >= maxHeight ? 0 : abs(maxHeight - k)
@@ -1146,6 +1159,7 @@ func hurdleRace(k: Int, height: [Int]) -> Int {
 jumpingOnClouds(c: [0, 0, 0, 1, 0, 0])
 
 //MARK: - Repeated String
+
 func repeatedString(s: String, n: Int) -> Int {
     let count = s.filter{ String($0) == "a"}.count
     let multipleTotal = (n / s.count) * count
@@ -1156,6 +1170,7 @@ func repeatedString(s: String, n: Int) -> Int {
 repeatedString(s: "a", n: 1000000000000)
 
 //MARK: - NonDivisibleSubset
+
 func nonDivisibleSubset(k: Int, s: [Int]) -> Int {
     let modArray = s.map{ $0 % k }
     return (0...k/2).map { (item) -> Int in
@@ -1171,6 +1186,7 @@ func nonDivisibleSubset(k: Int, s: [Int]) -> Int {
 nonDivisibleSubset(k: 4, s: [19,10,12,10,24,25,22])
 
 //MARK: - Sherlock and Squares
+
 func squares(a: Int, b: Int) -> Int {
     let aSqrt = floor(sqrt(Double(a)-0.5))
     let bSqrt = floor(sqrt(Double(b)+0.5))
@@ -1180,6 +1196,7 @@ func squares(a: Int, b: Int) -> Int {
 squares(a: 17, b: 24)
 
 //MARK: - Append and Delete
+
 func appendAndDelete(s: String, t: String, k: Int) -> String {
     if s.count + t.count < k {return "Yes"}
     var baseCount = 0
@@ -1195,6 +1212,7 @@ func appendAndDelete(s: String, t: String, k: Int) -> String {
 appendAndDelete(s: "qwerasdf", t: "qwerbsdf", k: 6)
 
 //MARK: - Extra Long Factorials
+
 func extraLongFactorials(n: Int) -> Void {
     guard n > 2 else {return print(1)}
     func carryAll(_ arr: [Int]) -> [Int] {
@@ -1234,6 +1252,7 @@ extraLongFactorials(n: 21)
 
 
 //MARK: - Find Digits
+
 func findDigits(n: Int) -> Int {
     let stringDigits = "\(n)"
     return stringDigits.filter { (char) -> Bool in
@@ -1246,6 +1265,7 @@ func findDigits(n: Int) -> Int {
 findDigits(n: 1012)
 
 //MARK: - Jumping on Clouds
+
 func jumpingOnClouds(c: [Int], k: Int) -> Int {
     var e = 100
     var index = 0
@@ -1259,6 +1279,7 @@ func jumpingOnClouds(c: [Int], k: Int) -> Int {
 jumpingOnClouds(c: [0, 0, 1, 0, 0, 1, 1, 0], k: 2)
 
 //MARK: - Permutation Equation
+
 func permutationEquation(p: [Int]) -> [Int] {
     var inverseP = Array(repeating: 0, count: p.count)
     p.enumerated().forEach { arg0  in
@@ -1271,6 +1292,7 @@ func permutationEquation(p: [Int]) -> [Int] {
 permutationEquation(p: [4, 3, 5, 1, 2])
 
 //MARK: - Climbing the Leaderboard
+
 func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
     var uniqueScores = [Int]()
     uniqueScores.append(scores[0])
@@ -1313,6 +1335,7 @@ func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
 climbingLeaderboard(scores: [100, 90, 90, 80, 75, 60], alice: [50, 65, 77, 90, 102])
 
 //MARK: - Picking Numbers
+
 func pickingNumbers(a: [Int]) -> Int {
     var maxCount = 0
     a.forEach { (item) in
@@ -1329,6 +1352,7 @@ func pickingNumbers(a: [Int]) -> Int {
 pickingNumbers(a: [4, 6, 5, 3, 3, 1])
 
 //MARK: - Forming a Magic Square
+
 func formingMagicSquare(s: [[Int]]) -> Int {
     let magics = [[[8, 1, 6], [3, 5, 7], [4, 9, 2]],
                   [[6, 1, 8], [7, 5, 3], [2, 9, 4]],
@@ -1350,6 +1374,7 @@ func formingMagicSquare(s: [[Int]]) -> Int {
 formingMagicSquare(s: [[4,8,2],[4,5,7],[6,1,6]])
 
 //MARK: - Cats and a Mouse
+
 func catAndMouse(x: Int, y: Int, z: Int) -> String {
     return abs(x-z) == abs(y-z) ? "Mouse C" :
         abs(x-z) > abs(y-z) ? "Cat B" : "Cat A"
@@ -1359,6 +1384,7 @@ catAndMouse(x: 1, y: 2, z: 3)
 catAndMouse(x: 1, y: 3, z: 2)
 
 //MARK: - Electronics Shop
+
 func getMoneySpent(keyboards: [Int], drives: [Int], b: Int) -> Int {
     guard b != 0 else {return -1}
     var maxCost = 0
@@ -1375,6 +1401,7 @@ getMoneySpent(keyboards: [3,1], drives: [5,2,8], b: 10)
 
 
 //MARK: - Counting Valleys
+
 func countingValleys(n: Int, s: String) -> Int {
     var sumArray = Array.init(repeating: 0, count: s.count + 1)
     for item in s.enumerated(){
@@ -1393,6 +1420,7 @@ func countingValleys(n: Int, s: String) -> Int {
 countingValleys(n: 10, s: "DUDDDUUDUU")
 
 //MARK: - Drawing Book
+
 func pageCount(n: Int, p: Int) -> Int {
     min(p/2, n/2 - p/2)
 }
@@ -1401,6 +1429,7 @@ pageCount(n: 6, p: 2)
 
 
 //MARK: - Sock Merchant
+
 func sockMerchant(n: Int, ar: [Int]) -> Int {
     var dict: [Int: Int] = [:]
     ar.forEach { dict[$0] = (dict[$0] ?? 0) + 1 }
@@ -1410,6 +1439,7 @@ func sockMerchant(n: Int, ar: [Int]) -> Int {
 sockMerchant(n: 9, ar: [10, 20, 20, 10, 10,30, 50, 10, 20])
 
 //MARK: - Bon Appétit
+
 func bonAppetit(bill: [Int], k: Int, b: Int) -> Void {
     let actualAnnaPay = (bill.reduce(0, +) - bill[k]) / 2
     print( actualAnnaPay == b ? "Bon Appetit" : "\(b - actualAnnaPay)")
@@ -1419,6 +1449,7 @@ bonAppetit(bill: [3, 10, 2, 9], k: 1, b: 12)
 
 
 //MARK: - Day of Programmer
+
 func dayOfProgrammer(year: Int) -> String {
     var februaryDayCount = 28
     if year == 1918{
@@ -1439,6 +1470,7 @@ dayOfProgrammer(year: 1918)
 
 
 //MARK: - Apple and Orange
+
 func countApplesAndOranges(s: Int, t: Int, a: Int, b: Int, apples: [Int], oranges: [Int]) -> Void {
     print(apples.filter { (s...t).contains($0+a)}.count)
     print(oranges.filter{ (s...t).contains($0+b)}.count)
@@ -1455,6 +1487,7 @@ func migratoryBirds(arr: [Int]) -> Int {
 migratoryBirds(arr: [1,4,4,4,5,3])
 
 //MARK: - Divisible Sum Pairs
+
 func divisibleSumPairs(n: Int, k: Int, ar: [Int]) -> Int {
     var count = 0
     for i in (0..<n){
@@ -1471,6 +1504,7 @@ divisibleSumPairs(n: 6, k: 3, ar: [1,3,2,6,1,2])
 
 
 //MARK: - Birthday Chocolate
+
 func birthday(s: [Int], d: Int, m: Int) -> Int {
     return s.enumerated().map { arg0 -> Bool in
         let (offset, _) = arg0
@@ -1483,6 +1517,7 @@ birthday(s: [4], d: 4, m: 1)
 
 
 //MARK: - Breaking the Records
+
 func breakingRecords(scores: [Int]) -> [Int] {
     var minPoint = scores[0]
     var maxPoint = scores[0]
@@ -1502,6 +1537,7 @@ func breakingRecords(scores: [Int]) -> [Int] {
 breakingRecords(scores: [3, 4, 21, 36, 10, 28, 35, 5, 24, 42])
 
 //MARK: - Between Two Sets
+
 func getTotalX(a: [Int], b: [Int]) -> Int {
     guard let max = a.max(), let min = b.min(), max <= min else {return 0}
     return (max...min).reduce(0) { (res, item) -> Int in
@@ -1515,6 +1551,7 @@ getTotalX(a: [2,4], b: [16,32,96])
 
 
 // MARK: - GCD
+
 func gcdIterativeEuklid(_ m: Int, _ n: Int) -> Int {
     var a: Int = 0
     var b: Int = max(m, n)
@@ -1568,6 +1605,7 @@ gcdIterativeEuklid(51357, 3819)
 gcdRecursiveEuklid(51357, 3819)
 
 //MARK: - LCM
+
 enum LCMError: Error{
     case divisionByZero
 }
@@ -1581,6 +1619,7 @@ func lcm(_ m: Int, _ n: Int) throws ->  Int {
 
 
 //MARK: - Kangaroo
+
 func kangaroo(x1: Int, v1: Int, x2: Int, v2: Int) -> String {
     guard x2-x1 != 0 else {return "YES"}
     guard v1 != v2 else {return "NO"}
