@@ -1,79 +1,67 @@
 import Foundation
 
 // MARK: - Matrix Layer Rotation
-//
-//func matrixRotation(matrix: [[Int]], r: Int) -> Void {
-//    let rowCount = matrix.count
-//    let columnCount = matrix.first!.count
-//    let listCount = min(rowCount, columnCount)/2
-//    var lists: [List] = []
-//    
-//    for i in 0..<listCount {
-//        let list = List(topEdgeRow: i, bottomEdgeRow: rowCount-i-1, leftColumn: i, rightColumn: columnCount-i-1)
-//        lists.append(list)
-//    }
-//    
-//    for i in 0..<rowCount {
-//        for j in 0..<columnCount {
-//            let cell = Cell(row: i, col: j, value: matrix[i][j])
-//            for index in 0..<lists.count {
-//                if lists[index].contains(row: i, col: j) { lists[index].addCell(cell: cell) }
-//            }
-//        }
-//    }
-//    
-//    struct Cell {
-//        var row: Int
-//        var col: Int
-//        var value: Int
-//    }
-//    
-//    struct List {
-//        var topEdgeRow: Int
-//        var bottomEdgeRow: Int
-//        var leftColumn: Int
-//        var rightColumn: Int
-//        var cells: [Cell] = []
-//        
-//        func contains(row: Int, col: Int) -> Bool {
-//            let foo = (leftColumn == col || rightColumn == col) && (topEdgeRow...bottomEdgeRow).contains(row)
-//            let baz = (topEdgeRow == row || bottomEdgeRow == row)  && (leftColumn...rightColumn).contains(col)
-//            return foo || baz
-//        }
-//        
-//        mutating func addCell(cell: Cell) {
-//            cells.append(cell)
-//        }
-//        
-//        mutating func sort() {
-//            let tmp = cells
-//            cells = tmp.sorted(by: { first, second in
-//                first.col ==
-//            })
-//        }
-//        
-//        mutating func rotate() {
-//            let tmp = cells
-//            for i in 0..<cells.count {
-//                if i == 0 { cells[i].value = tmp[cells.count-1].value}
-//                else { cells[i].value = tmp[i-1].value }
-//            }
-//        }
-//    }
-//    for _ in 0..<r {
-//        for index in 0..<lists.count {
-//            lists[index].rotate()
-//        }
-//    }
-//    var arr = Array(repeating: Array(repeating: 0, count: columnCount), count: rowCount)
-//    let flat = lists.map(\.cells).flatMap{$0}
-//    for cell in flat {
-//        arr[cell.row][cell.col] = cell.value
-//    }
-//    print(arr)
-//}
-//
-//matrixRotation(matrix: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]], r: 2)
+
+func matrixRotation(matrix: [[Int]], r: Int) -> Void {
+    // Types
+    struct Cell: Hashable {
+        var row, col, value: Int
+    }
+    
+    struct List {
+        var topEdgeRow, bottomEdgeRow, leftColumn, rightColumn: Int
+        var cells: [Cell] = []
+        
+        mutating func rotate() {
+            let tmp = cells
+            for i in 0..<cells.count {
+                if i == 0 { cells[i].value = tmp[cells.count-1].value}
+                else { cells[i].value = tmp[i-1].value }
+            }
+        }
+    }
+
+    // Properties
+    let rowCount = matrix.count
+    let columnCount = matrix.first!.count
+    let listCount = min(rowCount, columnCount)/2
+    var lists: [List] = []
+    var cellSet: Set<Cell> = []
+
+    // Populate
+    for i in 0..<listCount {
+        typealias Edge = (rowRange: [Int], colRange: [Int])
+        let leftEdge: Edge = (rowRange: Array(i...rowCount-i-1), colRange: Array(i...i))
+        let bottomEdge: Edge = (rowRange: Array(rowCount-1-i...rowCount-1-i), colRange: Array(i...columnCount-i-1))
+        let rightEdge: Edge = (rowRange: Array(i...rowCount-i-1).reversed(), colRange: Array(columnCount-1-i...columnCount-1-i))
+        let topEdge: Edge = (rowRange: Array(i...i), colRange: Array(i...columnCount-i-1).reversed())
+
+        let list = List(topEdgeRow: i, bottomEdgeRow: rowCount-i-1, leftColumn: i, rightColumn: columnCount-i-1, cells: [])
+        lists.append(list)
+        
+        [leftEdge, bottomEdge, rightEdge, topEdge].forEach { edge in
+            edge.colRange.forEach { col in
+                edge.rowRange.forEach { row in
+                    let cell = Cell(row: row, col: col, value: matrix[row][col])
+                    if (cellSet.contains(cell)) {return;}
+                    cellSet.insert(cell)
+                    lists[i].cells.append(cell)
+                }
+            }
+        }
+        
+        let rotationCount = r % lists[i].cells.count
+        for _ in 0..<rotationCount { lists[i].rotate() }
+    }
+    
+    // Decode
+    var arr = Array(repeating: Array(repeating: 0, count: columnCount), count: rowCount)
+    let flat = lists.map{$0.cells}.flatMap{$0}
+    for cell in flat { arr[cell.row][cell.col] = cell.value }
+    arr.forEach { print($0.map{"\($0)"}.joined(separator: " ")) }
+}
+
+matrixRotation(matrix: [[1, 2, 3, 4], [7, 8, 9, 10], [13, 14, 15, 16], [19, 20, 21, 22], [25, 26, 27, 28]], r: 7)
 
 // MARK: - The Bomberman Game
 
